@@ -18,10 +18,12 @@ class HashTable {
   insert(key, value) {
     const index = getIndexBelowMax(key.toString(), this.limit);
     const bucket = this.storage.get(index);
+
     if (bucket === undefined) {
       this.storage.set(index, [[key, value]]);
       return;
     }
+
     for (let i = 0; i < bucket.length; i++) {
       if (bucket[i][0] === key) {
         bucket[i][1] = value;
@@ -38,10 +40,14 @@ class HashTable {
   remove(key) {
     const index = getIndexBelowMax(key.toString(), this.limit);
     let tempBucket = this.storage.get(index);
-    if (tempBucket === undefined) {
+
+    if (!tempBucket) return;
+
+    if (tempBucket.length === 1) {
+      this.storage.set(index, undefined);
       return;
     }
-    tempBucket = tempBucket.filter(item => item[0] !== key);
+    tempBucket = tempBucket.filter(pair => pair[0] !== key);
     this.storage.set(index, tempBucket);
   }
   // Fetches the value associated with the given key from the hash table
@@ -50,8 +56,9 @@ class HashTable {
   retrieve(key) {
     const index = getIndexBelowMax(key.toString(), this.limit);
     const tempBucket = this.storage.get(index);
+
     if (tempBucket === undefined) return undefined;
-    const retrieved = tempBucket.filter(item => item[0] === key)[0];
+    const retrieved = tempBucket.find(pair => pair[0] === key);
     return retrieved ? retrieved[1] : undefined;
   }
 }
