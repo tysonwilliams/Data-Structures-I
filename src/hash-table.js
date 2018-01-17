@@ -36,13 +36,23 @@ class HashTable {
   // Fetch the bucket associated with the given key using the getIndexBelowMax function
   // Remove the key, value pair from the bucket
   remove(key) {
-    
+    const index = getIndexBelowMax(key.toString(), this.limit);
+    let tempBucket = this.storage.get(index);
+    if (tempBucket === undefined) {
+      return;
+    }
+    tempBucket = tempBucket.filter(item => item[0] !== key);
+    this.storage.set(index, tempBucket);
   }
   // Fetches the value associated with the given key from the hash table
   // Fetch the bucket associated with the given key using the getIndexBelowMax function
   // Find the key, value pair inside the bucket and return the value
   retrieve(key) {
-
+    const index = getIndexBelowMax(key.toString(), this.limit);
+    const tempBucket = this.storage.get(index);
+    if (tempBucket === undefined) return undefined;
+    const retrieved = tempBucket.filter(item => item[0] === key)[0];
+    return retrieved ? retrieved[1] : undefined;
   }
 }
 
